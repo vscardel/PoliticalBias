@@ -53,6 +53,8 @@ with graph.as_default():
 
 	correct = tf.reduce_sum(tf.cast(tf.equal(tf.argmax(output_classifier, axis=1), labels_treino), dtype=tf.float32))
 
+	saver = tf.compat.v1.train.Saver()
+
 	print(correct)
 
 def accuracy(session, Xi, yi):
@@ -64,6 +66,9 @@ def accuracy(session, Xi, yi):
 		ret = session.run([correct], feed_dict = {vetores_treino : X_batch, labels_treino : y_batch, training : False})
 		cont += ret[0]
 	return 100.0*cont/len(Xi)
+
+
+maior_acc = 0.0
 
 with tf.compat.v1.Session(graph = graph) as session:
 
@@ -81,6 +86,16 @@ with tf.compat.v1.Session(graph = graph) as session:
 												   alfa: valor_alfa,
 												   training: True})
 
-		print("Iteration #%d" % (i))
-		print("TRAIN: ACC=%.5f" % (accuracy(session, treino, labels)))
-		print("VAL: ACC=%.5f\n" % (accuracy(session, validacao, labels_validacao)))
+		acc_atual = accuracy(session, validacao, labels_validacao)
+
+		if i % 10 == 9:
+
+			if acc_atual > maior_acc:
+				print('salvando modelo com maior acuracia ate o momento')
+				print()
+				saver.save(session, 'modelo/my-model')
+				maior_acc = acc_atual
+
+			print("Iteration #%d" % (i))
+			print("TRAIN: ACC=%.5f" % (accuracy(session, treino, labels)))
+			print("VAL: ACC=%.5f\n" % (acc_atual))
