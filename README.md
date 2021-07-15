@@ -1,4 +1,4 @@
-# Projeto-Final-Lab-de-IA
+# Detector de Viés Político
 Modelo para determinar se uma reportagem emite opiniões consideradas de direita ou de esquerda.
 Dataset: Reportagens derivadas de portais com diferentes viéses polítivos.
 Arquitetura: Auto Encoder
